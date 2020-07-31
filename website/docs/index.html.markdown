@@ -101,4 +101,10 @@ The following arguments are supported in the `provider` block:
   can also be sourced from the `LW_API_SECRET` environment variable, or via the configuration
   file if `profile` is specified.
 
+* `tenant` - (Optional) This is a tenant name within your Lacework account. This argument
+  allows Organization Admins to manage multiple sub-accounts with a single API key. It can
+  also be sourced from the `LW_TENANT` environment variable, or via the configuration file
+  if `profile` is specified.
+
+
 -> **Note:** To generate a set of API access keys follow [this documentation](https://support.lacework.com/hc/en-us/articles/360011403853-Generate-API-Access-Keys-and-Tokens).

@@ -32,6 +32,12 @@ func Provider() terraform.ResourceProvider {
 				DefaultFunc: schema.EnvDefaultFunc("LW_ACCOUNT", nil),
 				Description: "Lacework account subdomain of URL (i.e. <ACCOUNT>.lacework.net)",
 			},
+			"tenant": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("LW_TENANT", nil),
+				Description: "Lacework tenant name (org admin only)",
+			},
 			"api_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -72,6 +78,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		logLevel  = os.Getenv("TF_LOG")
 		profile   = d.Get("profile").(string)
 		account   = d.Get("account").(string)
+		tenant    = d.Get("tenant").(string)
 		key       = d.Get("api_key").(string)
 		secret    = d.Get("api_secret").(string)
 		userAgent = fmt.Sprintf("Terraform/%s", version)
@@ -87,6 +94,12 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			logLevel = "DEBUG"
 		}
 		apiOpts = append(apiOpts, api.WithLogLevelAndWriter(logLevel, log.Writer()))
+	}
+
+	// a tenant is not a required field, it is optional and only for organization admis
+	if tenant != "" {
+		log.Printf("[INFO] Loading Lacework Tenant '%s'", tenant)
+		apiOpts = append(apiOpts, api.WithHeader("Accountname", tenant))
 	}
 
 	if account != "" && key != "" && secret != "" {
