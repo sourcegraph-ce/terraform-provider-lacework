@@ -23,7 +23,7 @@ package zap
 import (
 	"bytes"
 	"fmt"
-	"log"
+	log "github.com/sourcegraph-ce/logrus"
 	"os"
 	"sync"
 
